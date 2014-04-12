@@ -31,8 +31,8 @@ class HealthMonitorTest extends TestKit(ActorSystem("HealthMonitorTest"))
 
       val manager = TestActorRef(new TestHealthMonitor(probe.ref, Set()))
 
-      probe.expectMsg(Request("PING"))
-      probe.expectMsg(Request("PING"))
+      probe.expectMsg(Requests.Ping)
+      probe.expectMsg(Requests.Ping)
       manager ! PoisonPill
     }
 

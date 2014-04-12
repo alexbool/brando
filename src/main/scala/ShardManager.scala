@@ -45,7 +45,7 @@ class ShardManager(
 
     case request: ShardRequest ⇒
       val client = lookup(request.key)
-      client forward Request(request.command, (request.key +: request.params): _*)
+      client forward GenericRequest(request.command, (request.key +: request.params): _*)
 
     case shard: Shard ⇒
       pool.get(shard.id) match {

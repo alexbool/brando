@@ -5,6 +5,8 @@ import akka.actor.{ ActorRef, Props }
 import akka.pattern.ask
 import akka.util.{ ByteString, Timeout }
 
+import Requests._
+
 case object NonRespondingShardRestarted extends BrandoStateChange
 
 trait HealthMonitor extends ShardManager {
@@ -24,7 +26,7 @@ trait HealthMonitor extends ShardManager {
   }
 
   private def checkShard(shardRef: ActorRef) = {
-    def ping = (shardRef ? Request(ByteString("PING"))) map {
+    def ping = (shardRef ? Ping) map {
       case None ⇒ throw new Exception("Unexpected response")
       case _    ⇒
     }

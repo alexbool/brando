@@ -153,8 +153,8 @@ class Brando(
       context.become(authenticating)
 
       (for {
-        auth ← if (auth.isDefined) connection ? Request(ByteString("AUTH"), ByteString(auth.get)) else Future.successful()
-        database ← if (database.isDefined) connection ? Request(ByteString("SELECT"), ByteString(database.get.toString)) else Future.successful()
+        auth ← if (auth.isDefined) connection ? Requests.Auth(auth.get) else Future.successful()
+        database ← if (database.isDefined) connection ? Requests.Select(database.get) else Future.successful()
       } yield (Connected)) map {
         self ! _
       } onFailure {
