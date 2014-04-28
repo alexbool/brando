@@ -1173,6 +1173,43 @@ class RequestsTest extends TestKit(ActorSystem("RequestsTest")) with FunSpecLike
     }
   }
 
+  describe("Sets") {
+    describe("SADD") {
+      it("should add the specified members to the set stored at key") {
+        brando ! SAdd("set", "Hello")
+        expectMsg(Some(1))
+
+        brando ! SAdd("set", "World")
+        expectMsg(Some(1))
+
+        brando ! SAdd("set", "World")
+        expectMsg(Some(0))
+
+        brando ! SMembers("set")
+        val resp = receiveOne(500.millis).asInstanceOf[Option[List[Any]]]
+        assert(
+          resp.get.toSet === collection.immutable.Set(Some(ByteString("Hello")), Some(ByteString("World")))
+        )
+      }
+    }
+
+    describe("SMEMBERS") {
+      it("should return all the members of the set value stored at key") {
+        brando ! SAdd("set", "Hello")
+        expectMsg(Some(1))
+
+        brando ! SAdd("set", "World")
+        expectMsg(Some(1))
+
+        brando ! SMembers("set")
+        val resp = receiveOne(500.millis).asInstanceOf[Option[List[Any]]]
+        assert(
+          resp.get.toSet === collection.immutable.Set(Some(ByteString("Hello")), Some(ByteString("World")))
+        )
+      }
+    }
+  }
+
   override protected def afterAll() {
     brando ! PoisonPill
   }

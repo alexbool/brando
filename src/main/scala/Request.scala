@@ -610,6 +610,23 @@ object Requests {
   }
 
   // Sets
+
+  case class SAdd(key: String, members: List[String]) extends Request {
+    require(members.nonEmpty, "Set command takes at least one member")
+
+    val command = ByteString("SADD")
+    val params = (key :: members).map(toByteStringF)
+  }
+
+  object SAdd {
+    def apply(key: String, firstMember: String, otherMembers: String*): SAdd = SAdd(key, firstMember :: otherMembers.to[List])
+  }
+
+  case class SMembers(key: String) extends Request {
+    val command = ByteString("SMEMBERS")
+    val params = List(ByteString(key))
+  }
+
   // Sorted Sets
   // HyperLogLog
   // Pub/Sub
@@ -636,22 +653,6 @@ object Requests {
   case object FlushDb extends Request {
     val command = ByteString("FLUSHDB")
     val params = Nil
-  }
-
-  case class SAdd(key: String, members: List[String]) extends Request {
-    require(members.nonEmpty, "Set command takes at least one member")
-
-    val command = ByteString("SADD")
-    val params = (key :: members).map(toByteStringF)
-  }
-
-  object SAdd {
-    def apply(key: String, firstMember: String, otherMembers: String*): SAdd = SAdd(key, firstMember :: otherMembers.to[List])
-  }
-
-  case class SMembers(key: String) extends Request {
-    val command = ByteString("SMEMBERS")
-    val params = List(ByteString(key))
   }
 
   case object Multi extends Request {
