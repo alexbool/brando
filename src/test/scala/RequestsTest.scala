@@ -1193,6 +1193,19 @@ class RequestsTest extends TestKit(ActorSystem("RequestsTest")) with FunSpecLike
       }
     }
 
+    describe("SCARD") {
+      it("should return the set cardinality (number of elements) of the set stored at key") {
+        brando ! SAdd("set", "Hello")
+        expectMsg(Some(1))
+
+        brando ! SAdd("set", "World")
+        expectMsg(Some(1))
+
+        brando ! SCard("set")
+        expectMsg(Some(2))
+      }
+    }
+
     describe("SMEMBERS") {
       it("should return all the members of the set value stored at key") {
         brando ! SAdd("set", "Hello")

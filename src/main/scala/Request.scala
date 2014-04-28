@@ -622,6 +622,11 @@ object Requests {
     def apply(key: String, firstMember: String, otherMembers: String*): SAdd = SAdd(key, firstMember :: otherMembers.to[List])
   }
 
+  case class SCard(key: String) extends Request {
+    val command = ByteString("SCARD")
+    val params = List(ByteString(key))
+  }
+
   case class SMembers(key: String) extends Request {
     val command = ByteString("SMEMBERS")
     val params = List(ByteString(key))
