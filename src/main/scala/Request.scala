@@ -627,6 +627,17 @@ object Requests {
     val params = List(ByteString(key))
   }
 
+  case class SDiff(keys: List[String]) extends Request {
+    require(keys.nonEmpty, "SDIFF command takes at least one key")
+
+    val command = ByteString("SDIFF")
+    val params = keys.map(toByteStringF)
+  }
+
+  object SDiff {
+    def apply(firstKey: String, otherKeys: String*): SDiff = SDiff(firstKey :: otherKeys.to[List])
+  }
+
   case class SMembers(key: String) extends Request {
     val command = ByteString("SMEMBERS")
     val params = List(ByteString(key))
