@@ -1266,6 +1266,28 @@ class RequestsTest extends TestKit(ActorSystem("RequestsTest")) with FunSpecLike
       }
     }
 
+    describe("SINTERSTORE") {
+      it("should store the members of the set resulting from the intersection of all the given sets") {
+        brando ! SAdd("key1", "a", "b", "c", "d")
+        expectMsg(Some(4))
+
+        brando ! SAdd("key2", "c")
+        expectMsg(Some(1))
+
+        brando ! SAdd("key3", "a", "c", "e")
+        expectMsg(Some(3))
+
+        brando ! SInterStore("key4", "key1", "key2", "key3")
+        expectMsg(Some(1))
+
+        brando ! SMembers("key4")
+        val resp = receiveOne(500.millis).asInstanceOf[Option[List[Any]]]
+        assert(
+          resp.get.toSet === collection.immutable.Set(Some(ByteString("c")))
+        )
+      }
+    }
+
     describe("SMEMBERS") {
       it("should return all the members of the set value stored at key") {
         brando ! SAdd("set", "Hello")

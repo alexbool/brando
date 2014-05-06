@@ -661,6 +661,18 @@ object Requests {
     def apply(firstKey: String, otherKeys: String*): SInter = SInter(firstKey :: otherKeys.to[List])
   }
 
+  case class SInterStore(destination: String, keys: List[String]) extends Request {
+    require(keys.nonEmpty, "SINTERSTORE command takes at least one key")
+
+    val command = ByteString("SINTERSTORE")
+    val params = (destination :: keys).map(toByteStringF)
+  }
+
+  object SInterStore {
+    def apply(destination: String, firstKey: String, otherKeys: String*): SInterStore =
+      SInterStore(destination, firstKey :: otherKeys.to[List])
+  }
+
   case class SMembers(key: String) extends Request {
     val command = ByteString("SMEMBERS")
     val params = List(ByteString(key))
