@@ -638,6 +638,18 @@ object Requests {
     def apply(firstKey: String, otherKeys: String*): SDiff = SDiff(firstKey :: otherKeys.to[List])
   }
 
+  case class SDiffStore(destination: String, keys: List[String]) extends Request {
+    require(keys.nonEmpty, "SDIFFSTORE command takes at least one key")
+
+    val command = ByteString("SDIFFSTORE")
+    val params = (destination :: keys).map(toByteStringF)
+  }
+
+  object SDiffStore {
+    def apply(destination: String, firstKey: String, otherKeys: String*): SDiffStore =
+      SDiffStore(destination, firstKey :: otherKeys.to[List])
+  }
+
   case class SMembers(key: String) extends Request {
     val command = ByteString("SMEMBERS")
     val params = List(ByteString(key))
