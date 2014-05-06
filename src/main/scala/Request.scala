@@ -650,6 +650,17 @@ object Requests {
       SDiffStore(destination, firstKey :: otherKeys.to[List])
   }
 
+  case class SInter(keys: List[String]) extends Request {
+    require(keys.nonEmpty, "SINTER command takes at least one key")
+
+    val command = ByteString("SINTER")
+    val params = keys.map(toByteStringF)
+  }
+
+  object SInter {
+    def apply(firstKey: String, otherKeys: String*): SInter = SInter(firstKey :: otherKeys.to[List])
+  }
+
   case class SMembers(key: String) extends Request {
     val command = ByteString("SMEMBERS")
     val params = List(ByteString(key))
